@@ -1,9 +1,8 @@
 import React, { Component } from 'react'
 import { connect } from 'react-redux'
-
+// count_by_keyword, type: ['', 'post', 'res_address']
 class SeachResult extends Component {
     render() {
-      console.log(this.props)
         return (
             <section className="section__result-pages">
             <div className="container-fluid result-pages__container">
@@ -87,7 +86,7 @@ class SeachResult extends Component {
                     <div className="rp-search-result__items">
 
                       {/* SEARCH RESULT ITEM*/}
-                     
+                      { this.props.children[0] }
                       {/* SEARCH RESULT ITEM*/}
                     </div>
                     <div className="rp-search-result__pagination">

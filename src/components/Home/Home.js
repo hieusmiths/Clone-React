@@ -1,6 +1,6 @@
 import React, { Component } from 'react'
 import { connect } from 'react-redux';
-import { Redirect } from 'react-router-dom'
+import { Redirect, withRouter } from 'react-router-dom'
 import { fetchSearchByKeyWord_API }  from './../../services/actions/post'
 import Autocomplete from '../Autocomplete/Autocomplete';
 
@@ -10,11 +10,12 @@ class Home extends Component {
         this.state = {
             data: [],
             isSubmited: false,
-            isActiveSuggestion: false
+            isActiveSuggestion: false,
+            searchText: ''
         }
     }
-    componentWillReceiveProps(nextProps) {
-        console.log(nextProps)
+    
+    UNSAFE_componentWillReceiveProps(nextProps) {
         this.setState({
             data: nextProps.suggestions
         })
@@ -42,9 +43,9 @@ class Home extends Component {
                                         <div className="navbar--item"><a href="/ket-qua/thong-tin">Thông tin</a></div>
                                         <div className="navbar--item"><a href="/ban-do">Bản đồ</a></div>
                                         <div className="navbar--item"><a href="/ket-qua/bang-gia">Bảng giá</a></div>
-                                        <div className="navbar--item"><a href="#">Danh bạ</a></div>
-                                        <div className="navbar--item"><a href="#">Tài nguyên</a></div>
-                                        <div className="navbar--item"><a href="#">Hỏi đáp</a></div>
+                                        <div className="navbar--item"><a href="/#">Danh bạ</a></div>
+                                        <div className="navbar--item"><a href="/#">Tài nguyên</a></div>
+                                        <div className="navbar--item"><a href="/#">Hỏi đáp</a></div>
                                     </div>
                                     </div>
                                 </nav>
@@ -56,15 +57,15 @@ class Home extends Component {
                             <div className="menu_mobile--item dropdown dropdown__menu-tool">
                             <div className="dropdown-toggle d-flex" data-toggle="dropdown"><img className="img_menu" src="../../assets/img/Group 1.png" alt="" /></div>
                             <div className="dropdown-menu menu-tool">
-                                <div className="dropdown-item"><a href="#"><img src="../../assets/img/Group 1569.png" alt="" /><span className="menu-tool--text">
+                                <div className="dropdown-item"><a href="/#"><img src="../../assets/img/Group 1569.png" alt="" /><span className="menu-tool--text">
                                     Tính toán khoản
                                     vay</span></a></div>
-                                <div className="dropdown-item"><a href="#"><img src="../../assets/img/baseline-insert_chart-24px.png" alt="" /><span className="menu-tool--text">Tính toán hiệu quả dự án</span></a></div>
-                                <div className="dropdown-item"><a href="#"><img src="../../assets/img/baseline-monetization_on-24px.png" alt="" /><span className="menu-tool--text">Tài chính cá nhân</span></a></div>
+                                <div className="dropdown-item"><a href="/#"><img src="../../assets/img/baseline-insert_chart-24px.png" alt="" /><span className="menu-tool--text">Tính toán hiệu quả dự án</span></a></div>
+                                <div className="dropdown-item"><a href="/#"><img src="../../assets/img/baseline-monetization_on-24px.png" alt="" /><span className="menu-tool--text">Tài chính cá nhân</span></a></div>
                             </div>
                             </div>
                             <div className="menu_mobile--item">
-                            <div className="menu-notify"><a className="d-flex" href="#"><img className="img_menu" src="../../assets/img/Group 22.png" alt="" /></a></div>
+                            <div className="menu-notify"><a className="d-flex" href="/#"><img className="img_menu" src="../../assets/img/Group 22.png" alt="" /></a></div>
                             </div>
                             <div className="menu_mobile--item"><a className="btn-login" href="/dang-nhap"><img src="../../assets/img/icon-avatar.png" alt="" /></a></div>
                         </div>
@@ -85,10 +86,10 @@ class Home extends Component {
                             <div className="homepage--input-search">
                                 <div className="input-search__container d-flex justify-content-center">
                                 <div className="w-100 input-search__content collapsed" id="autoComplete__content">
-                                    <input list='#home' onChange ={ this.search } className="form-control" id="autoComplete" type="text" placeholder="Search ..." tabIndex={1} />
-                                    <datalist id="#home" className ="{{this.isActiveSuggestion}}  ">
-                                        <Autocomplete suggestions= { this.state.data } />
-                                    </datalist>
+                                    <input list='#home' autoComplete='false' onKeyPress={ this.search } className="form-control" id="autoComplete" type="text" placeholder="Search ..." tabIndex={1} />
+                                    <ul id="#home">
+                                        <Autocomplete callback = { this.redirectCallback} searchText = { this.state.searchText } suggestions= { this.state.data } />
+                                    </ul>
                                 </div>
                                 </div>
                             </div>
@@ -100,22 +101,22 @@ class Home extends Component {
                     <div className="homepage__footer layout-footer">
                     <div className="homepage__footer-container">
                         <div className="hp-footer__links layout-footer__links d-flex justify-content-center justify-content-lg-start">
-                        <div className="hp-footer--link layout-footer--link"><a href="#">Giới thiệu</a></div>
-                        <div className="hp-footer--link layout-footer--link"><a href="#">Hướng dẫn</a></div>
+                        <div className="hp-footer--link layout-footer--link"><a href="/#">Giới thiệu</a></div>
+                        <div className="hp-footer--link layout-footer--link"><a href="/#">Hướng dẫn</a></div>
                         </div>
                         {/* Desktop Display*/}
                         <div className="hp-footer__quick-views layout-footer__quick-views d-none d-lg-flex">
                         <div className="hp-footer__quick-view layout-footer--quick-view w-50">
                             <marquee>
                             <div className="quick-view__content"><span><span className="quick-view--title">Tin nhanh 1: </span> Lorem Ipsum. Proin gravida nibh vel velit auctor aliquet. Aenean
-                                sollicitudin, lorem quis biben <a href="#">Xem nhanh</a></span></div>
+                                sollicitudin, lorem quis biben <a href="/#">Xem nhanh</a></span></div>
                             </marquee>
                         </div>
                         <div className="hp-footer__quick-view layout-footer--quick-view w-50">
                             <marquee>
                             <div className="quick-view__content"><span><span className="quick-view--title">Tin nhanh 2: </span> Lorem Ipsum. Proin gravida nibh vel velit
                                 auctor aliquet. Aenean
-                                sollicitudin, lorem quis biben <a href="#">Xem nhanh</a></span></div>
+                                sollicitudin, lorem quis biben <a href="/#">Xem nhanh</a></span></div>
                             </marquee>
                         </div>
                         </div>
@@ -125,10 +126,10 @@ class Home extends Component {
                             <marquee>
                             <div className="quick-view__content d-inline-flex"><span><span className="quick-view--title">Tin nhanh 1: </span> Lorem Ipsum. Proin gravida nibh vel velit
                                 auctor aliquet. Aenean
-                                sollicitudin, lorem quis biben <a href="#">Xem nhanh</a></span></div>
+                                sollicitudin, lorem quis biben <a href="/#">Xem nhanh</a></span></div>
                             <div className="quick-view__content d-inline-flex"><span><span className="quick-view--title">Tin nhanh 2: </span> Lorem Ipsum. Proin gravida nibh vel velit
                                 auctor aliquet. Aenean
-                                sollicitudin, lorem quis biben <a href="#">Xem nhanh</a></span></div>
+                                sollicitudin, lorem quis biben <a href="/#">Xem nhanh</a></span></div>
                             </marquee>
                         </div>
                         </div>
@@ -141,14 +142,16 @@ class Home extends Component {
 
     search = (e) => {
         const searchText = e.target.value
+        console.log(searchText)
         if(searchText.trim().length === 0 || searchText.length === 0) {
             this.setState({
-                isActiveSuggestion: false
+                searchText: ''
             })
             return;
         }
+        
         this.setState({
-            isActiveSuggestion: true
+            searchText
         })
         const payload = {
             query: {
@@ -156,12 +159,27 @@ class Home extends Component {
             }
         }
         this.props.test(payload)
+        if(e.charCode  === 13) {
+            this.props.history.push({
+                pathname:"/search",
+                state:{
+                    pageStartData: this.state.data,
+                    params: {
+                        query: {
+                            keyword: this.state.searchText
+                        }
+                    }
+                 }
+               });
+        }
     }
 
-    isActiveSuggestion = () => {
-        if(this.isActiveSuggestion) return 'haha';
-        return 'd-none'
+    redirectCallback = (payload) => {
+        this.props.history.push("/search");
     }
+
+    // redirect = (path)
+
 }
 
 
@@ -177,4 +195,4 @@ const mapDispatchToProps = dispatch => {
     }
 }
 
-export default connect(mapStateToProps, mapDispatchToProps)(Home)
+export default withRouter(connect(mapStateToProps, mapDispatchToProps)(Home))

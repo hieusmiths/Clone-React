@@ -1,19 +1,23 @@
 import React, { Component } from 'react'
-import { connect } from 'react-redux'
 
 class SearchIResultItem extends Component {
+    UNSAFE_componentWillMount() {
+        console.log(this.props)
+    }
     render() {
+        console.log('ok')
+        console.log(this.props.data)
         return (
             <div class="rp-search-result-item">
                 <div class="search-result__item-container d-flex"><img class="sr-item__modal" src="../../../assets/img/icon-modal.png" />
                     <div class="sr-item__poster">
-                        <div class="poster--avatar"><a href="#"><img src="../../../assets/img/1pcs-hot-kawaii-small-teddy-bears-plush-toys.png" alt="" /></a></div>
+                        <div class="poster--avatar"><a href="/#"><img src="../../../assets/img/1pcs-hot-kawaii-small-teddy-bears-plush-toys.png" alt="" /></a></div>
                     </div>
                     <div class="sr-item__details">
                         <div class="item-details__container">
                             <div class="item-details__title">
                                 <div class="ids-title__content">
-                                    <div class="ids-title--header d-flex"><a class="title--name" href="#">Asset data team</a>
+                                    <div class="ids-title--header d-flex"><a class="title--name" href="/#">Asset data team</a>
                                         <div class="title--rate d-flex align-items-center"><span>[Chung c&#x1B0; </span><span class="title_rate--highlight"> 3,5+ </span><img src="../../assets/img/star.png" alt="" />]</div>
                                     </div>
                                     <p class="mb-0 ids-title--category">đã đăng một <a class="ids-title--category" href="/ket-qua/thong-tin">Con đường</a> </p>
@@ -31,22 +35,22 @@ class SearchIResultItem extends Component {
                             </div>
                             <div class="item-details__actions">
                                 <div class="action-buttons-bottom">
-                                    <a href="#" class="btn -marked">
+                                    <a href="/#" class="btn -marked">
                                         <span class="fa fa-star icon"></span> 40
                                     </a>
-                                    <a href="#" class="btn -comment">
+                                    <a href="/#" class="btn -comment">
                                         <span class="fa fa-comment-o icon"></span> 40
                                     </a>
-                                    <a href="#" class="btn -liked">
+                                    <a href="/#" class="btn -liked">
                                         <span class="-ap  icon-like2 icon"></span> 40
                                     </a>
-                                    <a href="#" class="btn -share">
+                                    <a href="/#" class="btn -share">
                                         <span class="-ap  icon-share4 icon"></span> 40
                                     </a>
-                                    <a href="#" class="btn -mail">
+                                    <a href="/#" class="btn -mail">
                                         <span class="-ap  icon-mail6 icon"></span> 10
                                     </a>
-                                    <a href="#" class="btn -mail">
+                                    <a href="/#" class="btn -mail">
                                         <span class="-ap   icon-add_shopping_cart icon"></span>
                                     </a>
                                 </div>
@@ -63,4 +67,4 @@ class SearchIResultItem extends Component {
 }
 
 
-export default connect(mapStateToProps, mapDispatchToProps)(SearchIResultItem)
+export default SearchIResultItem;

@@ -1,5 +1,4 @@
 import React, { Component } from 'react'
-import { Redirect } from 'react-router-dom'
 import PropTypes from "prop-types";
 import './style.scss'
 export default class Autocomplete extends Component {
@@ -16,26 +15,35 @@ export default class Autocomplete extends Component {
 
     static defaultProps = {
         suggestions: [],
-        isSuggestion: false
+        isSuggestion: false,
+        searchText: ''
     };
     componentWillReceiveProps(nextProps) {
         this.setState({
             suggestions: nextProps.suggestions
         })
     }
-    
+    callback = (payload) => {
+        return this.props.callback(payload)
+    }
     render() {
         return (
             <React.Fragment>
-                { 
+               {
+                this.props.searchText.length > 0 ? (
                     this.state.suggestions.map((item, i) => {
-                        console.log(this.state.suggestions)
-                        return (
-                            <option key={i} value={ item.keyword } />
-                        )
+                return <li key= {i} onClick = { () => this.callback(item._id) }> { item.name } </li>
                     })
-                }
+                ) : ''
+               }
             </React.Fragment>
         )
+    }
+    fillComplete = () => {
+        if(this.props.searchText.length > 0) {
+            this.state.suggestions.map((item, i) => {
+            return <li key= {i} onClick = { this.props.callback }> </li>
+            })
+        }
     }
 }

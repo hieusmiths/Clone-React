@@ -3,9 +3,10 @@ import Constants  from './../../constants'
 import { callingAPI, callAPISuccess, callAPIErr } from  './../../../utils/functions/callAPIStatus'
 
 import axios from 'axios'
+import { async } from 'q';
 
 const fetchAllPost = data => ({
-    type: ActionsType.T_GET_ALL_LIST_POST,
+    type: ActionsType.CALL_API_ERROR,
     data
 })
 export const fetchAllPost_API = () => {
@@ -25,12 +26,37 @@ export const fetchSearchByKeyWord_API = (object) => {
         keyword: object.query.keyword
     }
     return async dispatch => {
-        dispatch(callingAPI(ActionsType.T_CALLING_API))
+        dispatch(callingAPI(ActionsType.CALLING_API))
         try {
             const response = await axios.get(Constants.API_GET_LIST_SEARCH_BY_KEYWORD, { params })
-            dispatch(callAPISuccess(ActionsType.T_CALL_API_SUCCESS, response.data))
+            dispatch(callAPISuccess(ActionsType.CALL_API_SUCCESS, response.data))
         } catch (err) {
-            dispatch(callAPIErr(ActionsType.T_CALL_API_ERROR, err))
+            dispatch(callAPIErr(ActionsType.CALL_API_ERROR, err))
+        }
+    }
+}
+
+
+const fecthCountPost_API = (totalPage) => {
+    return {
+        type: ActionsType.GET_COUNT_SEARCH_BY_KEYWORD_TYPE,
+        totalPage
+    }
+}
+export const fetchCountPostByKeyword_API = (payload) => {
+    const params = {
+       keyword: payload.keyword,
+       type: payload.type
+    }
+
+    return async dispatch => {
+        const URL_API = `${Constants.API_GET_COUNT_SEARCH_BY_KEY_WORD}`
+        try {
+            const response = axios.get(URL_API, { params })
+            console.log(response)
+            dispatch(fecthCountPost_API(response))
+        } catch (error) {
+            dispatch(callAPIErr(ActionsType.CALL_API_ERROR, error))
         }
     }
 }

@@ -1,6 +1,6 @@
 import { combineReducers } from 'redux'
-import posts from './posts'
+import  {posts, navigationPost}  from './blog'
 const allReducers = combineReducers({
-    posts
+    posts, navigationPost
 })
 export default allReducers;
