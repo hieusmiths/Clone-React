@@ -1,0 +1,9 @@
+export default class ActionsType {
+
+    static T_CALLING_API = 'CALLING_API'
+    static T_CALL_API_SUCCESS = 'CALL_API_SUCCESS'
+    static T_CALL_API_ERROR = 'CALL_API_ERROR'
+    static T_GET_ALL_LIST_POST = 'GET_ALL_LIST_POST'
+    static T_GET_LIST_SEARCH_BY_KEYWORD = 'GET_LIST_SEARCH_BY_KEYWORD'
+
+}

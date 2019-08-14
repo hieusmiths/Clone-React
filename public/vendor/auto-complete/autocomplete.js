@@ -48,7 +48,6 @@
     return "<span class=".concat(select.highlight, ">").concat(value, "</span>");
   };
   var addResultsToList = function addResultsToList(resultsList, dataSrc, resultItem) {
-    var autoCompleteContent = document.getElementById('autoComplete__content');
     dataSrc.forEach(function (event, record) {
       var result = document.createElement(resultItem.element);
       var resultValue = dataSrc[record].value[event.key] || dataSrc[record].value;
@@ -56,15 +55,14 @@
       result.setAttribute("class", select.result);
       result.setAttribute("tabindex", "1");
       resultItem.content ? resultItem.content(event, result) : result.innerHTML = event.match || event;
-      autoCompleteContent.setAttribute('class', 'w-100 input-search__content expanded')
       resultsList.appendChild(result);
     });
   };
-  var navigation = function navigation(selector, resultsList) {
+  var navigation = function navigation(selector, resultsList, documentOrShadowRoot) {
     var input = getInput(selector);
     var first = resultsList.firstChild;
     document.onkeydown = function (event) {
-      var active = document.activeElement;
+      var active = documentOrShadowRoot.activeElement;
       switch (event.keyCode) {
         case 38:
           if (active !== first && active !== input) {
@@ -84,8 +82,6 @@
     };
   };
   var clearResults = function clearResults(resultsList) {
-    var autoCompleteContent = document.getElementById('autoComplete__content');
-    autoCompleteContent.setAttribute('class', 'w-100 input-search__content collapsed')
     return resultsList.innerHTML = "";
   };
   var getSelection = function getSelection(field, resultsList, callback, resultsValues) {
@@ -169,26 +165,32 @@
         cache: typeof config.data.cache === "undefined" ? true : config.data.cache
       };
       this.query = config.query;
+      this.triggerEvent = config.triggerEvent || ["input"],
       this.searchEngine = config.searchEngine === "loose" ? "loose" : "strict";
+      this.customEngine = config.customEngine ? config.customEngine : false;
       this.threshold = config.threshold || 0;
       this.debounce = config.debounce || 0;
       this.resultsList = {
         render: config.resultsList && config.resultsList.render ? config.resultsList.render : false,
+        shadowRoot: config.resultsList.shadowRoot || document,
         view: config.resultsList && config.resultsList.render ? autoCompleteView.createResultsList({
           container:
-          config.resultsList && config.resultsList.container ?
-          config.resultsList.container :
-          false,
+          config.resultsList && config.resultsList.container
+          ? config.resultsList.container
+          : false,
           destination:
-          config.resultsList && config.resultsList.destination ?
-          config.resultsList.destination :
-          autoCompleteView.getInput(this.selector),
+          config.resultsList && config.resultsList.destination
+          ? config.resultsList.destination
+          : autoCompleteView.getInput(this.selector),
           position:
-          config.resultsList && config.resultsList.position ?
-          config.resultsList.position :
-          "afterend",
+          config.resultsList && config.resultsList.position
+          ? config.resultsList.position
+          : "afterend",
           element: config.resultsList && config.resultsList.element ? config.resultsList.element : "ul"
-        }) : null
+        }) : null,
+        navigation: {
+          customMethod: config.resultsList.navigation && config.resultsList.navigation.customMethod ? config.resultsList.navigation.customMethod : false
+        }
       };
       this.sort = config.sort || false;
       this.placeHolder = config.placeHolder;
@@ -233,26 +235,29 @@
       }
     }, {
       key: "listMatchedResults",
-      value: function listMatchedResults(data) {
+      value: function listMatchedResults(data, event) {
         var _this = this;
         return new Promise(function (resolve) {
           var resList = [];
           data.filter(function (record, index) {
             var search = function search(key) {
-              var match = _this.search(_this.queryValue, record[key] || record);
-              if (match && key) {
-                resList.push({
-                  key: key,
-                  index: index,
-                  match: match,
-                  value: record
-                });
-              } else if (match && !key) {
-                resList.push({
-                  index: index,
-                  match: match,
-                  value: record
-                });
+              var recordValue = key ? record[key] : record;
+              if (recordValue) {
+                var match = _this.customEngine ? _this.customEngine(_this.queryValue, record[key] || record) : _this.search(_this.queryValue, record[key] || record);
+                if (match && key) {
+                  resList.push({
+                    key: key,
+                    index: index,
+                    match: match,
+                    value: record
+                  });
+                } else if (match && !key) {
+                  resList.push({
+                    index: index,
+                    match: match,
+                    value: record
+                  });
+                }
               }
             };
             if (_this.data.key) {
@@ -285,7 +290,7 @@
           var list = _this.sort ? resList.sort(_this.sort).slice(0, _this.maxResults) : resList.slice(0, _this.maxResults);
           if (_this.resultsList.render) {
             autoCompleteView.addResultsToList(_this.resultsList.view, list, _this.resultItem);
-            autoCompleteView.navigation(_this.selector, _this.resultsList.view);
+            _this.resultsList.navigation.customMethod ? _this.resultsList.navigation.customMethod(event, _this.resultsList.view, autoCompleteView.getInput(_this.selector)) : autoCompleteView.navigation(_this.selector, _this.resultsList.view, _this.resultsList.shadowRoot);
           }
           return resolve({
             matches: resList.length,
@@ -335,11 +340,10 @@
             var resultsList = _this2.resultsList.view;
             var clearResults = autoCompleteView.clearResults(resultsList);
             if (triggerCondition) {
-              _this2.listMatchedResults(_this2.dataSrc).then(function (list) {
+              _this2.listMatchedResults(_this2.dataSrc, event).then(function (list) {
                 eventEmitter(event, list);
                 if (list.list.length === 0 && _this2.noResults && _this2.resultsList.render) {
                   _this2.noResults();
-                  document.getElementById('autoComplete__content').setAttribute('class', 'w-100 input-search__content expanded')
                 } else {
                   if (onSelection) {
                     autoCompleteView.getSelection(_this2.selector, resultsList, onSelection, list);
@@ -350,14 +354,14 @@
               eventEmitter(event);
             }
           } else if (!renderResultsList && triggerCondition) {
-            _this2.listMatchedResults(_this2.dataSrc).then(function (list) {
+            _this2.listMatchedResults(_this2.dataSrc, event).then(function (list) {
               eventEmitter(event, list);
             });
           } else {
             eventEmitter(event);
           }
         };
-        input.addEventListener("keyup", debounce(function (event) {
+        var run = function run(event) {
           if (!_this2.data.cache) {
             var data = _this2.data.src();
             if (data instanceof Promise) {
@@ -372,7 +376,12 @@
           } else {
             exec(event);
           }
-        }, this.debounce));
+        };
+        this.triggerEvent.forEach(function (eventType) {
+          input.addEventListener(eventType, debounce(function (event) {
+            return run(event);
+          }, _this2.debounce));
+        });
       }
     }, {
       key: "init",
@@ -397,4 +406,3 @@
   return autoComplete;
 
 })));
-
