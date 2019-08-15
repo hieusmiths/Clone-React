@@ -7,6 +7,7 @@ export default class Autocomplete extends Component {
         this.state = {
             suggestions: this.props.suggestions
         }
+ 
     }
     static propsTypes = {
         suggestions: PropTypes.instanceOf(Array),
@@ -29,6 +30,7 @@ export default class Autocomplete extends Component {
     render() {
         return (
             <React.Fragment>
+
                {
                 this.props.searchText.length > 0 ? (
                     this.state.suggestions.map((item, i) => {
@@ -38,12 +40,5 @@ export default class Autocomplete extends Component {
                }
             </React.Fragment>
         )
-    }
-    fillComplete = () => {
-        if(this.props.searchText.length > 0) {
-            this.state.suggestions.map((item, i) => {
-            return <li key= {i} onClick = { this.props.callback }> </li>
-            })
-        }
     }
 }

@@ -1,5 +1,6 @@
 import React, { Component } from 'react'
 import { connect } from 'react-redux'
+import Pagination from '../Pagination/Pagination';
 // count_by_keyword, type: ['', 'post', 'res_address']
 class SeachResult extends Component {
     render() {
@@ -86,16 +87,16 @@ class SeachResult extends Component {
                     <div className="rp-search-result__items">
 
                       {/* SEARCH RESULT ITEM*/}
-                      { this.props.children[0] }
+                      { this.props.children }
+                      {/* <HomePersonal />
+                      <TheRoad />
+                      <Review /> */}
                       {/* SEARCH RESULT ITEM*/}
                     </div>
-                    <div className="rp-search-result__pagination">
-                      <div className="search-result__pagination-container container">
-                        <div className="search-result__pagination-content d-flex align-items-center justify-content-center justify-content-sm-end"><a className="sr-pagination--btn sr-pagination--previous" href="/#">Trước</a>
-                          <div className="sr-pagination__items d-flex align-items-center"><a className="sr-pagination--item is-actived" href="/#">1</a><a className="sr-pagination--item" href="/#">2</a><a className="sr-pagination--item" href="/#">3</a><a className="sr-pagination--item" href="/#">4</a><a className="sr-pagination--item" href="/#">5</a></div><a className="sr-pagination--btn sr-pagination--next" href="/#">Tiếp</a>
-                        </div>
-                      </div>
-                    </div>
+                    
+                    {/* Pagination */}
+                          <Pagination />
+                    {/* Pagination */}
                   </div>
                 </div>
               </div>

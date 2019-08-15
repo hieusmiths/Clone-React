@@ -37,27 +37,51 @@ export const fetchSearchByKeyWord_API = (object) => {
 }
 
 
-const fecthCountPost_API = (totalPage) => {
+const fecthCountPost_API = (payload) => {
     return {
         type: ActionsType.GET_COUNT_SEARCH_BY_KEYWORD_TYPE,
-        totalPage
+        payload
     }
 }
 export const fetchCountPostByKeyword_API = (payload) => {
     const params = {
        keyword: payload.keyword,
-       type: payload.type
+       type: payload.type || ''
     }
 
     return async dispatch => {
         const URL_API = `${Constants.API_GET_COUNT_SEARCH_BY_KEY_WORD}`
         try {
-            const response = axios.get(URL_API, { params })
-            console.log(response)
-            dispatch(fecthCountPost_API(response))
+            const response =  await axios.get(URL_API, { params })
+            const { total_search } = response.data[0]
+            const payload = {
+                total_search
+            }
+            dispatch(fecthCountPost_API(payload))
         } catch (error) {
             dispatch(callAPIErr(ActionsType.CALL_API_ERROR, error))
         }
     }
 }
 
+const fecthDataByPage = (payload) => {
+    return {
+        type: ActionsType.GET_DATA_SEARCH_BY_KEYWORD_PAGE,
+        payload
+    }
+}
+export const fetchDataPageNumber = (payload) => {
+    const params = {
+        page: payload.page,
+        keyword: payload.keyword
+    }
+    console.log("p",payload )
+    return async dispatch => {
+        try {
+            const response = await axios.get(Constants.API_GET_LIST_SEARCH_BY_KEYWORD, { params })
+            dispatch(fecthDataByPage(response))
+        } catch (error) {
+            
+        }
+    }
+}

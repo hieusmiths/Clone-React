@@ -1,15 +1,19 @@
 import ActionsType from './../../services/actionsName'
 
 const initialState = {
-    totalPage: 0
+    total_search: 0,
+    currentPage: 1,
+    dataCurrentPage: []
 }
 
 export default (state = initialState, { type, payload }) => {
     switch (type) {
 
     case ActionsType.GET_COUNT_SEARCH_BY_KEYWORD_TYPE:
-        return { ...state, ...payload }
+        return { ...state, total_search: payload.total_search }
 
+    case ActionsType.GET_DATA_SEARCH_BY_KEYWORD_PAGE:
+        return {...state, dataCurrentPage: [...payload.data]}
     default:
         return state
     }

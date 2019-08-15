@@ -11,8 +11,10 @@ class Home extends Component {
             data: [],
             isSubmited: false,
             isActiveSuggestion: false,
-            searchText: ''
+            searchText: '',
+            currentSelect: -1
         }
+        this.searchRef = React.createRef()
     }
     
     UNSAFE_componentWillReceiveProps(nextProps) {
@@ -86,9 +88,9 @@ class Home extends Component {
                             <div className="homepage--input-search">
                                 <div className="input-search__container d-flex justify-content-center">
                                 <div className="w-100 input-search__content collapsed" id="autoComplete__content">
-                                    <input list='#home' autoComplete='false' onKeyPress={ this.search } className="form-control" id="autoComplete" type="text" placeholder="Search ..." tabIndex={1} />
-                                    <ul id="#home">
-                                        <Autocomplete callback = { this.redirectCallback} searchText = { this.state.searchText } suggestions= { this.state.data } />
+                                    <input  list='#home'  ref="googleInput" autoComplete='false' onKeyDown={ this.search } className="form-control" id="autoComplete" type="text" placeholder="Search ..." tabIndex={1} />
+                                    <ul id="homeComplete">
+                                        <Autocomplete id='listSuggest' callback = { this.redirectCallback} searchText = { this.state.searchText } suggestions= { this.state.data } />
                                     </ul>
                                 </div>
                                 </div>
@@ -142,44 +144,53 @@ class Home extends Component {
 
     search = (e) => {
         const searchText = e.target.value
-        console.log(searchText)
         if(searchText.trim().length === 0 || searchText.length === 0) {
             this.setState({
                 searchText: ''
             })
             return;
         }
-        
         this.setState({
-            searchText
-        })
+            searchText }, () => {}
+        )
         const payload = {
             query: {
-                keyword: searchText,
+                keyword: this.state.searchText
             }
         }
         this.props.test(payload)
-        if(e.charCode  === 13) {
+        this.selectByKeyboard(e)
+        if(e.keyCode === 13 || e.keyCode === 'Enter' ) {
             this.props.history.push({
                 pathname:"/search",
                 state:{
                     pageStartData: this.state.data,
-                    params: {
-                        query: {
-                            keyword: this.state.searchText
-                        }
+                    params:{
+                        ...payload
                     }
                  }
                });
         }
     }
 
+    selectByKeyboard = (e) => {
+        if(e.keyCode  === 40) {
+            const input = document.getElementById('homeComplete').getElementsByTagName("li");
+            this.setState({
+                currentSelect: this.state + 1
+            })
+        }
+
+        if(e.keyCode === 38) {
+            this.setState({
+                currentSelect: this.state - 1
+            })
+        }
+    }
+
     redirectCallback = (payload) => {
         this.props.history.push("/search");
     }
-
-    // redirect = (path)
-
 }
 
 
