@@ -1,6 +1,7 @@
 import React, { Component } from 'react'
 import { connect } from 'react-redux'
 import Pagination from '../Pagination/Pagination';
+import NewsDetailModal from '../../page/modals/news-detail-modal/NewsDetailModal';
 // count_by_keyword, type: ['', 'post', 'res_address']
 class SeachResult extends Component {
     render() {
@@ -69,7 +70,7 @@ class SeachResult extends Component {
                 <div className="result-pages__body-container container">
                   <div className="result-pages__search-result">
                     <div className="rp-search-result__header">
-                      <div className="text-result">Khoảng <strong>1.782</strong> kết quả</div>
+                      <div className="text-result">Khoảng <strong> { this.props.totalReult }</strong> kết quả</div>
                       <div className="search-result__header-map">
                         <div className="header-map__container">
                           <div className="header-map__main">
@@ -95,7 +96,7 @@ class SeachResult extends Component {
                     </div>
                     
                     {/* Pagination */}
-                          <Pagination />
+                          <Pagination max = { 4 } totalResult = { this.props.totalResult } callbackPagination= {this.props.callbackPagination} />
                     {/* Pagination */}
                   </div>
                 </div>
@@ -279,6 +280,7 @@ class SeachResult extends Component {
                 </div>
               </div>
             </div>
+            <NewsDetailModal />
           </section>
         )
     }
@@ -287,7 +289,9 @@ const mapStateToProps = (state) => ({
   data: state.posts.payload
 })
 
-const mapDispatchToProps = {
-  
+const mapDispatchToProps = dispatch =>{
+  return {
+    
+  }
 }
 export default connect(mapStateToProps, mapDispatchToProps)(SeachResult)

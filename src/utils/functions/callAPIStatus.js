@@ -1,4 +1,4 @@
-const callingAPI = actionType => ({ type: actionType })
+const callingAPI = (actionType, payload) => ({ type: actionType, payload })
 const callAPISuccess = (actionType, payload) => ({type: actionType, payload})
 const callAPIErr = (actionType, err) => (
     {

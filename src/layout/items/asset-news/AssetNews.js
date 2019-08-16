@@ -1,5 +1,7 @@
 import React, { Component } from 'react'
+import { connect } from 'react-redux'
 import { diffDays } from './../../../utils/functions/diffDays'
+import { getDetailPost } from './../../../services/actions/post'
 
 class AssetNews extends Component {
     render() {
@@ -23,7 +25,7 @@ class AssetNews extends Component {
                                 </div>
                             </div>
                             <div className="item-details__post">
-                                <div className="ids-post--title"><a href="/#">{ data.name }</a></div>
+                                <div className="ids-post--title"><a href="/#" data-toggle="modal" data-target="#newsDetailsModal" onClick={() => this.props.getDetailPost(data._id)}>{ data.name }</a></div>
                                 <div className="ids-post--content">
                                     <span> { data.description } </span>
                                 </div>
@@ -54,5 +56,14 @@ class AssetNews extends Component {
         )
     }
 }
+const mapStateToProps = (state) => ({
+})
 
-export default AssetNews;
+const mapDispatchToProps = dispath => {
+    return {
+        getDetailPost: (postId) => dispath(getDetailPost(postId))
+    }
+}
+
+
+export default connect(mapStateToProps, mapDispatchToProps)(AssetNews)

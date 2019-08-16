@@ -3,6 +3,7 @@ import { connect } from 'react-redux';
 import { Redirect, withRouter } from 'react-router-dom'
 import { fetchSearchByKeyWord_API }  from './../../services/actions/post'
 import Autocomplete from '../Autocomplete/Autocomplete';
+import './style.module.scss'
 
 class Home extends Component {
     constructor(props){
@@ -88,7 +89,7 @@ class Home extends Component {
                             <div className="homepage--input-search">
                                 <div className="input-search__container d-flex justify-content-center">
                                 <div className="w-100 input-search__content collapsed" id="autoComplete__content">
-                                    <input  list='#home'  ref="googleInput" autoComplete='false' onKeyDown={ this.search } className="form-control" id="autoComplete" type="text" placeholder="Search ..." tabIndex={1} />
+                                    <input onKeyDown={this.selectByKeyboard}  list='#home'  ref="googleInput" autoComplete='false' onChange={ this.search } className="form-control" id="autoComplete" type="text" placeholder="Search ..." tabIndex={1} />
                                     <ul id="homeComplete">
                                         <Autocomplete id='listSuggest' callback = { this.redirectCallback} searchText = { this.state.searchText } suggestions= { this.state.data } />
                                     </ul>
@@ -155,27 +156,21 @@ class Home extends Component {
         )
         const payload = {
             query: {
-                keyword: this.state.searchText
+                keyword: e.target.value
             }
         }
         this.props.test(payload)
-        this.selectByKeyboard(e)
-        if(e.keyCode === 13 || e.keyCode === 'Enter' ) {
-            this.props.history.push({
-                pathname:"/search",
-                state:{
-                    pageStartData: this.state.data,
-                    params:{
-                        ...payload
-                    }
-                 }
-               });
-        }
     }
 
     selectByKeyboard = (e) => {
+        if(e.keyCode === 13 || e.keyCode === 'Enter' ) {
+            this.props.history.push({
+                pathname:"/search",
+                search: `?keyword=${e.target.value}&page=1`
+               });
+        }
+        const input = document.getElementById('homeComplete').getElementsByTagName("li");
         if(e.keyCode  === 40) {
-            const input = document.getElementById('homeComplete').getElementsByTagName("li");
             this.setState({
                 currentSelect: this.state + 1
             })
@@ -195,7 +190,7 @@ class Home extends Component {
 
 
 const mapStateToProps = (state) => ({
-    suggestions: state.posts.payload
+    suggestions: state.posts.data
 })
 
 const mapDispatchToProps = dispatch => {

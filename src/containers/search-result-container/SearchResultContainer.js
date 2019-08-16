@@ -20,22 +20,21 @@ class SearchResultContainer extends Component {
             keyword: ''
         }
     }
+    static defaultProps = {
+        keyword: ''
+    }
     UNSAFE_componentWillMount() {
-        console.log(this.props)
-        const { query, pageStartData} = this.props.location.state.params;
-            this.setState({
-                query,
-                searchResult: pageStartData,
-            })
-            const params = {
-                page: this.state.currentPage,
-                keyword: this.props.location.state.params.query.keyword
-            }
-            this.fetchTotalPage(query)
-            this.fetchDataPage(params)
+        const params = {
+            keyword: this.props.keyword,
+        }
+        this.setState({keyword: params.keyword})
+        console.log(this.props.total_search)
+            this.fetchTotalPage(params)
+            this.fetchDataPage()
     }
     UNSAFE_componentWillReceiveProps(nextProps) {
         const { total_search } = nextProps;
+        
         const totalPage = Math.ceil(total_search / this.state.maxDisplayPost)
         this.setState({
             totalPage,
@@ -48,7 +47,7 @@ class SearchResultContainer extends Component {
     render() {
         const { searchResult } = this.props
         return (
-            <SeachResult fetchDataPage = { this.fetchDataPage }>
+            <SeachResult callbackPagination = {this.fetchDataPage} totalResult = {this.props.total_search} fetchDataPage = { this.fetchDataPage }>
                 { this.fillResultItem(searchResult) }
             </SeachResult>
         )
@@ -79,14 +78,18 @@ class SearchResultContainer extends Component {
         console.log(this.props.total_search)
     }
 
-    fetchDataPage = (query) => {
+    fetchDataPage = ( pageNumber = 1 ) => {
         const params = {
-            page:   this.state.currentPage,
-            keyword: this.state.keyword,
+            page:   pageNumber,
+            keyword: this.props.keyword,
             type: this.state.type || ''
         }
         this.props.fetchDataPage(params)
+        const searchParams = new URLSearchParams();
+        searchParams.set("page", pageNumber);
     }
+
+    
 
     setUrl(params, pageNumber) {
 
@@ -95,8 +98,11 @@ class SearchResultContainer extends Component {
 
 const mapStateToProps = (state) => ({
     total_search: state.navigationPost.total_search,
-    searchResult: state.navigationPost.dataCurrentPage
+    searchResult: state.navigationPost.dataCurrentPage,
+    keyword: state.navigationPost.keyword,
 })
+
+
 
 const mapDispatchToProps = dispath => {
     return {
