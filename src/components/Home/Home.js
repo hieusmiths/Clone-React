@@ -13,7 +13,8 @@ class Home extends Component {
             isSubmited: false,
             isActiveSuggestion: false,
             searchText: '',
-            currentSelect: -1
+            flag: true,
+            currentSuggest: 0
         }
         this.searchRef = React.createRef()
     }
@@ -24,11 +25,6 @@ class Home extends Component {
         })
     }
     render() {
-        if(this.state.isSubmited) {
-            return (
-                <Redirect to="/search"/>
-              )
-        }
         return (
             <div className="section-homepage">
                 <div className="container-fluid homepage__container">
@@ -88,12 +84,9 @@ class Home extends Component {
                             </div>
                             <div className="homepage--input-search">
                                 <div className="input-search__container d-flex justify-content-center">
-                                <div className="w-100 input-search__content collapsed" id="autoComplete__content">
-                                    <input onKeyDown={this.selectByKeyboard}  list='#home'  ref="googleInput" autoComplete='false' onChange={ this.search } className="form-control" id="autoComplete" type="text" placeholder="Search ..." tabIndex={1} />
-                                    <ul id="homeComplete">
-                                        <Autocomplete id='listSuggest' callback = { this.redirectCallback} searchText = { this.state.searchText } suggestions= { this.state.data } />
-                                    </ul>
-                                </div>
+                                    <div className="w-100 input-search__content collapsed" id="autoComplete__content">
+                                        <Autocomplete maxSuggest={5} callBackEnter={this.callBackEnter} id='listSuggest' callback = { this.redirectCallback} search = { this.search } suggestions= { ["1", "hieu", "Minh","hieu", "Minh","hieu", "Minh","hieu", "Minh","hieu", "Minh","hieu", "Minh","hieu", "Minh","hieu", "Minh"]} />
+                                    </div>
                                 </div>
                             </div>
                             </div>
@@ -144,43 +137,29 @@ class Home extends Component {
     }
 
     search = (e) => {
-        const searchText = e.target.value
+        const searchText = e.currentTarget.value
         if(searchText.trim().length === 0 || searchText.length === 0) {
             this.setState({
                 searchText: ''
             })
             return;
         }
-        this.setState({
-            searchText }, () => {}
-        )
-        const payload = {
-            query: {
-                keyword: e.target.value
+        this.setState({searchText}, () => {
+            const payload = {
+                query: {
+                    keyword: this.state.searchText
+                }
             }
-        }
-        this.props.test(payload)
+            this.props.test(payload)
+            }
+        )
     }
 
-    selectByKeyboard = (e) => {
-        if(e.keyCode === 13 || e.keyCode === 'Enter' ) {
-            this.props.history.push({
-                pathname:"/search",
-                search: `?keyword=${e.target.value}&page=1`
-               });
-        }
-        const input = document.getElementById('homeComplete').getElementsByTagName("li");
-        if(e.keyCode  === 40) {
-            this.setState({
-                currentSelect: this.state + 1
-            })
-        }
-
-        if(e.keyCode === 38) {
-            this.setState({
-                currentSelect: this.state - 1
-            })
-        }
+    callBackEnter = (e) => {
+        this.props.history.push({
+            pathname:"/search",
+            search: `?keyword=${e.currentTarget.value}&page=1`
+        });
     }
 
     redirectCallback = (payload) => {

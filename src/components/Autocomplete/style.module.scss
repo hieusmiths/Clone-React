@@ -1,0 +1,24 @@
+input[list]::-webkit-calendar-picker-indicator {
+    display: none;
+}
+h1 {
+    color: red
+}
+input[list] {
+    width: 100%;
+}
+li {
+    list-style: none;
+}
+.active-suggest {
+    color: red;
+}
+.focusNone:focus {
+    outline: none !important;
+}
+.boxShadownNone {
+    box-shadow: none !important;
+}
+.option-active {
+    color: red
+}

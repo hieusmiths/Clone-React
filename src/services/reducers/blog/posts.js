@@ -1,4 +1,4 @@
-import ActionsType from './../../services/actionsName'
+import ActionsType from './../../actionsName'
 
 const initialState = {
     data: [],

@@ -28,7 +28,6 @@ class SearchResultContainer extends Component {
             keyword: this.props.keyword,
         }
         this.setState({keyword: params.keyword})
-        console.log(this.props.total_search)
             this.fetchTotalPage(params)
             this.fetchDataPage()
     }
@@ -86,7 +85,12 @@ class SearchResultContainer extends Component {
         }
         this.props.fetchDataPage(params)
         const searchParams = new URLSearchParams();
+        searchParams.set("keyword", this.props.keyword);
         searchParams.set("page", pageNumber);
+        this.props.history.push({
+            pathname: '/search',
+            search: searchParams.toString()
+      });
     }
 
     
