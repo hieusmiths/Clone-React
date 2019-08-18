@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 
 import styles from './style.module.scss'
+import './style.module.scss'
 export class Autocomplete extends Component {
   static propTypes = {
     options: PropTypes.instanceOf(Array).isRequired
@@ -11,20 +12,25 @@ export class Autocomplete extends Component {
     filteredOptions: [],
     showOptions: false,
     userInput: '',
-    maxSuggest: this.props.maxSuggest
+    maxSuggest: this.props.maxSuggest,
+    isFirst: true
   };
-
+  searchRef = React.createRef()
   onChange = (e) => {
-    const { suggestions } = this.props;
     const userInput = e.currentTarget.value;
-    this.props.search(e)
+    if(userInput.trim().length === 0 || userInput.length === 0) {
+      this.setState({
+        userInput: ''
+      })
+      return;
+    }
+    this.props.search(this.state.userInput)
+    const { suggestions } = this.props;
     const filteredOptions = suggestions.filter(
       (optionName) =>
         optionName.toLowerCase().indexOf(userInput.toLowerCase()) > -1
     );
-
     this.setState({
-      activeOption: 0,
       filteredOptions,
       showOptions: true,
       userInput: e.currentTarget.value
@@ -40,25 +46,33 @@ export class Autocomplete extends Component {
     });
   };
   onKeyDown = (e) => {
-    const { activeOption, filteredOptions } = this.state;
-
+    if(this.state.userInput === ''){
+      return;
+    }
+    const { activeOption, filteredOptions, maxSuggest, isFirst } = this.state;
+    if(filteredOptions.length === 0) return;
+    const listDom = document.querySelectorAll('ul.options li')
     if (e.keyCode === 13) {
       this.setState({
         activeOption: 0,
         showOptions: false,
-        userInput: filteredOptions[activeOption]
       });
-      this.props.callBackEnter(e)
+      console.log(this.searchRef.current.value)
+      this.props.callBackEnter(this.searchRef.current.value)
     } else if (e.keyCode === 38) {
       if (activeOption === 0) {
         return;
       }
-      this.setState({ activeOption: activeOption - 1, userInput: e.currentTarget.value });
+      const userInput = listDom[activeOption -1].innerText
+      console.log(userInput)
+      this.setState({ activeOption: activeOption - 1, userInput });
     } else if (e.keyCode === 40) {
-      if (activeOption === filteredOptions.length - 1) {
+      if (activeOption === maxSuggest - 1) {
         return;
       }
-      this.setState({ activeOption: activeOption + 1 , userInput: e.currentTarget.value});
+      const userInput = listDom[activeOption +1].innerText
+      console.log(userInput)
+      this.setState({ activeOption: activeOption + 1 , userInput});
     }
   };
 
@@ -82,7 +96,7 @@ export class Autocomplete extends Component {
               }
               return (
                 <li className={className} key={index} onClick={onClick}>
-                  {optionName}
+                  {optionName} {index}
                 </li>
               );
             })}
@@ -105,6 +119,7 @@ export class Autocomplete extends Component {
             onChange={onChange}
             onKeyDown={onKeyDown}
             value={userInput}
+            ref = { this.searchRef }
           />
         </div>
         {optionList}

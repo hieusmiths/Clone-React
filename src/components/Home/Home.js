@@ -85,7 +85,7 @@ class Home extends Component {
                             <div className="homepage--input-search">
                                 <div className="input-search__container d-flex justify-content-center">
                                     <div className="w-100 input-search__content collapsed" id="autoComplete__content">
-                                        <Autocomplete maxSuggest={5} callBackEnter={this.callBackEnter} id='listSuggest' callback = { this.redirectCallback} search = { this.search } suggestions= { ["1", "hieu", "Minh","hieu", "Minh","hieu", "Minh","hieu", "Minh","hieu", "Minh","hieu", "Minh","hieu", "Minh","hieu", "Minh"]} />
+                                        <Autocomplete  maxSuggest={5} callBackEnter={this.callBackEnter} id='listSuggest' callback = { this.redirectCallback} search = { this.search } suggestions= { ["1", "hieu", "Minh","hieu", "Minh","hieu", "Minh","hieu", "Minh","hieu", "Minh","hieu", "Minh","hieu", "Minh","hieu", "Minh"]} />
                                     </div>
                                 </div>
                             </div>
@@ -136,18 +136,12 @@ class Home extends Component {
         )
     }
 
-    search = (e) => {
-        const searchText = e.currentTarget.value
-        if(searchText.trim().length === 0 || searchText.length === 0) {
-            this.setState({
-                searchText: ''
-            })
-            return;
-        }
+    search = (searchText) => {
+        console.log(searchText)
         this.setState({searchText}, () => {
             const payload = {
                 query: {
-                    keyword: this.state.searchText
+                    keyword: searchText
                 }
             }
             this.props.test(payload)
@@ -155,16 +149,15 @@ class Home extends Component {
         )
     }
 
-    callBackEnter = (e) => {
+
+    callBackEnter = (searchText) => {
+        console.log("paren", `?keyword=${searchText}&page=1`)
         this.props.history.push({
             pathname:"/search",
-            search: `?keyword=${e.currentTarget.value}&page=1`
+            search: `?keyword=${searchText}&page=1`
         });
     }
 
-    redirectCallback = (payload) => {
-        this.props.history.push("/search");
-    }
 }
 
 

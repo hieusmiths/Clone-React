@@ -61,9 +61,6 @@ class Pagination extends Component {
         this.callback(e, pageNumber)
         this.setState({currentPage: this.state.currentPage - 1})
     }
-    setActive = () => {
-
-    }
 
     genPagination = (current) => {
         const range = 9; const pages = 16; const  start = 1
@@ -82,12 +79,6 @@ const mapStateToProps = (state) => ({
     total_search: state.navigationPost.total_search,
 })
 
-const mapDispatchToProps = dispath => {
-    return {
-        getData: (pageNumber) => dispath(fetchDataPageNumber(pageNumber)),
-    }
-}
 
-
-export default connect(mapStateToProps, mapDispatchToProps)(Pagination)
+export default Pagination
 
