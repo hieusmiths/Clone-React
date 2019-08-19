@@ -59,9 +59,9 @@ class AssetNews extends Component {
 const mapStateToProps = (state) => ({
 })
 
-const mapDispatchToProps = dispath => {
+const mapDispatchToProps = dispatch => {
     return {
-        getDetailPost: (postId) => dispath(getDetailPost(postId))
+        getDetailPost: (postId) => dispatch(getDetailPost(postId))
     }
 }
 

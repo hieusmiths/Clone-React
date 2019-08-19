@@ -1,10 +1,18 @@
 import React, { Component } from 'react'
 import { connect } from 'react-redux'
+import { withRouter} from 'react-router-dom';
+
 import Pagination from '../Pagination/Pagination';
 import NewsDetailModal from '../../page/modals/news-detail-modal/NewsDetailModal';
-// count_by_keyword, type: ['', 'post', 'res_address']
+import Autocomplete from '../Autocomplete/Autocomplete';
+import { getSuggestion, setSearch }  from './../../services/actions/post'
 class SeachResult extends Component {
+  constructor(){
+    super()
+    this.scrollOffset = React.createRef()
+  }
     render() {
+        console.log(this.props.keyword)
         return (
             <section className="section__result-pages">
             <div className="container-fluid result-pages__container">
@@ -18,7 +26,9 @@ class SeachResult extends Component {
                       <div className="rp-header-top__search-input lh-top__search-input">
                         <div className="search-input">
                           <div className="w-100 input-search__content collapsed" id="autoComplete__content">
-                            <input className="form-control" id="autoComplete" type="text" placeholder="Search ..." tabIndex={1} />
+                           
+                           <Autocomplete field={'search'}  maxSuggest={5} callBackEnter={this.callBackEnter} id='listSuggest' callback = { this.redirectCallback} search = { this.search } default={this.props.keyword} />
+
                           </div>
                         </div>
                       </div>
@@ -69,8 +79,8 @@ class SeachResult extends Component {
               <div className="result-pages__body">
                 <div className="result-pages__body-container container">
                   <div className="result-pages__search-result">
-                    <div className="rp-search-result__header">
-                      <div className="text-result">Khoảng <strong> { this.props.totalReult }</strong> kết quả</div>
+                    <div ref={ (ref) => this.scrollOffset=ref } className="rp-search-result__header">
+                      <div className="text-result">Khoảng <strong> { this.props.totalResult }</strong> kết quả</div>
                       <div className="search-result__header-map">
                         <div className="header-map__container">
                           <div className="header-map__main">
@@ -96,7 +106,7 @@ class SeachResult extends Component {
                     </div>
                     
                     {/* Pagination */}
-                          <Pagination max = { 4 } totalResult = { this.props.totalResult } callbackPagination= {this.props.callbackPagination} />
+                          <Pagination   max = { 4 } totalResult = { this.props.totalResult } callbackPagination= { this.callbackPagination} />
                     {/* Pagination */}
                   </div>
                 </div>
@@ -284,14 +294,46 @@ class SeachResult extends Component {
           </section>
         )
     }
+    callbackPagination = (pageNumber) => {
+      this.props.callbackPagination(pageNumber)
+      this.scrollToRef(this.scrollOffset)
+    }
+    
+    scrollToRef = ref => window.scrollTo({
+      top: this.scrollOffset.offsetTop, 
+      behavior: "smooth" 
+    });
+
+    search = (searchText) => {
+      this.setState({searchText}, () => {
+          const payload = {
+              query: {
+                  keyword: searchText
+              }
+          }
+          this.props.test(payload)
+          }
+      )
+  }
+
+  callBackEnter = (searchText) => {
+      this.props.setSearch({keyword: searchText})
+      this.props.history.push(`/search?keyword=${searchText}&page=1`);
+  }
 }
 const mapStateToProps = (state) => ({
-  data: state.posts.payload
+  data: state.posts.payload,
+  keyword: state.search.keyword
 })
 
 const mapDispatchToProps = dispatch =>{
   return {
-    
+      test: (payload) => {
+              dispatch(getSuggestion(payload))
+          },
+          setSearch: (payload) => {
+              dispatch(setSearch(payload))
+          }
   }
 }
-export default connect(mapStateToProps, mapDispatchToProps)(SeachResult)
+export default connect(mapStateToProps, mapDispatchToProps)(withRouter(SeachResult))

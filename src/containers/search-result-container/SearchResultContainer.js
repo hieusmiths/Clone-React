@@ -24,13 +24,15 @@ class SearchResultContainer extends Component {
         keyword: ''
     }
     UNSAFE_componentWillMount() {
-        const params = {
-            keyword: this.props.keyword,
-        }
-        this.setState({keyword: params.keyword})
-            this.fetchTotalPage(params)
-            this.fetchDataPage()
+        this.fetchDataPage()
     }
+    componentDidMount() {
+        const payload = {
+            keyword: this.props.keyword || ''
+        }
+        this.fetchTotalPage(payload)
+    }
+    
     UNSAFE_componentWillReceiveProps(nextProps) {
         const { total_search } = nextProps;
         
@@ -61,7 +63,7 @@ class SearchResultContainer extends Component {
                     return <TheRoad key={i} data={data} />
                 case Contstants.TYPE_New.REVIEW:
                     return <Review key={i} data={data} />
-                case Contstants.TYPE_New.HOME_PERSONAL:
+                case Contstants.TYPE_New.PRODUCT:
                     return <HomePersonal key={i} data={data} />
                 default:
                     break
@@ -78,20 +80,23 @@ class SearchResultContainer extends Component {
     }
 
     fetchDataPage = ( pageNumber = 1 ) => {
+        // const query = new URLSearchParams(this.props.location.search);
         const params = {
             page:   pageNumber,
             keyword: this.props.keyword,
             type: this.state.type || ''
         }
+        console.log(params)
+        
         this.props.fetchDataPage(params)
         const searchParams = new URLSearchParams();
-        searchParams.set("keyword", this.props.keyword);
-        searchParams.set("page", pageNumber);
+        console.log('ca', this.props.keyword)
         this.props.history.push({
             pathname: '/search',
             search: searchParams.toString()
       });
     }
+
 
     
 
@@ -103,7 +108,8 @@ class SearchResultContainer extends Component {
 const mapStateToProps = (state) => ({
     total_search: state.navigationPost.total_search,
     searchResult: state.navigationPost.dataCurrentPage,
-    keyword: state.navigationPost.keyword,
+    keyword: state.search.keyword,
+    page: state.search.page
 })
 
 

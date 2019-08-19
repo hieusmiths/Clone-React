@@ -4,6 +4,15 @@ import { callingAPI, callAPISuccess, callAPIErr } from  './../../../utils/functi
 
 import axios from 'axios'
 
+
+export const setSearch = (payload) => {
+    console.log(payload)
+    return {
+        type: ActionsType.SEARCH_SAVE,
+        payload
+    }
+}
+
 const fetchAllPost = data => ({
     type: ActionsType.CALL_API_ERROR,
     data
@@ -67,6 +76,7 @@ export const fetchCountPostByKeyword_API = (payload) => {
                 keyword: params.keyword
             }
             dispatch(fecthCountPost_API(payload))
+            dispatch(setSearch(payload))
         } catch (error) {
             dispatch(callAPIErr(ActionsType.CALL_API_ERROR, error))
         }
@@ -80,21 +90,75 @@ const fecthDataByPage = (payload) => {
     }
 }
 export const fetchDataPageNumber = (payload) => {
+
+    
+
     const params = {
         page: payload.page,
         keyword: payload.keyword
     }
-    console.log("p",payload )
+
     return async dispatch => {
         try {
             const response = await axios.get(Constants.API_GET_LIST_SEARCH_BY_KEYWORD, { params })
-            dispatch(fecthDataByPage(response))
+            const payload = {
+                ...params,
+                dataCurrentPage: response.data
+            }
+            dispatch(setSearch(params))
+            dispatch(fecthDataByPage(payload))
         } catch (error) {
             
         }
     }
 }
 
-export const getDetailPost = (postId) => {
-    
+const getDetailPostSuccess = (payload) => {
+    return {
+        type: ActionsType.GET_DETAIL_POST,
+        payload
+    }
+}
+export const getDetailPost = (postID) => {
+    const params = {
+        postID
+    }
+    return async dispatch => {
+        try {
+            const response = await axios.get(Constants.API_GET_DETAIL_POST, { params })
+            const payload = {
+                content: response.data[0]
+            }
+            dispatch(getDetailPostSuccess(payload))
+        } catch (error) {
+            
+        }
+    }
+}
+
+const getSuggestionSuccess = (payload) => {
+    return {
+        type: ActionsType.GET_SUGGESTIONS,
+        payload
+    }
+}
+
+export const getSuggestion = (payload) => {
+    const params = {
+        ...payload.query
+    }
+    console.log(params)
+    return async dispatch => {
+        try {
+            const response = await axios.get(Constants.API_GET_SUGGESTION, { params })
+            const payload = {
+                keyword: params.keyword,
+                suggestions: response.data
+            }
+            dispatch(setSearch(payload))
+            dispatch(getSuggestionSuccess(payload))
+        } catch (error) {
+            
+        }
+    }
 }

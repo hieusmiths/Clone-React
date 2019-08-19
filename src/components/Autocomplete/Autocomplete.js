@@ -1,40 +1,38 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
+import {connect} from 'react-redux'
 
 import styles from './style.module.scss'
 import './style.module.scss'
 export class Autocomplete extends Component {
   static propTypes = {
-    options: PropTypes.instanceOf(Array).isRequired
+    options: PropTypes.instanceOf(Array).isRequired,
   };
+  static defaultProps = {
+    default: ''
+  }
   state = {
-    activeOption: 0,
+    activeOption: -1,
     filteredOptions: [],
     showOptions: false,
     userInput: '',
     maxSuggest: this.props.maxSuggest,
-    isFirst: true
   };
   searchRef = React.createRef()
   onChange = (e) => {
     const userInput = e.currentTarget.value;
+    const { suggestions, field } = this.props;
     if(userInput.trim().length === 0 || userInput.length === 0) {
       this.setState({
         userInput: ''
       })
       return;
     }
-    this.props.search(this.state.userInput)
-    const { suggestions } = this.props;
-    const filteredOptions = suggestions.filter(
-      (optionName) =>
-        optionName.toLowerCase().indexOf(userInput.toLowerCase()) > -1
-    );
     this.setState({
-      filteredOptions,
+      // filteredOptions,
       showOptions: true,
       userInput: e.currentTarget.value
-    });
+    },() => {this.props.search(this.state.userInput)});
   };
 
   onClick = (e) => {
@@ -45,34 +43,32 @@ export class Autocomplete extends Component {
       userInput: e.currentTarget.innerText
     });
   };
-  onKeyDown = (e) => {
-    if(this.state.userInput === ''){
+  onKeyDown = async (e) => {
+    if(this.state.userInput === '' ){
       return;
     }
-    const { activeOption, filteredOptions, maxSuggest, isFirst } = this.state;
-    if(filteredOptions.length === 0) return;
+    const { activeOption,  maxSuggest } = this.state;
     const listDom = document.querySelectorAll('ul.options li')
     if (e.keyCode === 13) {
-      this.setState({
+      await this.setState({
         activeOption: 0,
         showOptions: false,
       });
-      console.log(this.searchRef.current.value)
-      this.props.callBackEnter(this.searchRef.current.value)
+      this.props.callBackEnter(listDom[activeOption].innerHTML)
     } else if (e.keyCode === 38) {
-      if (activeOption === 0) {
+      if (activeOption === 0 ) {
         return;
       }
       const userInput = listDom[activeOption -1].innerText
       console.log(userInput)
-      this.setState({ activeOption: activeOption - 1, userInput });
+      await this.setState({ activeOption: activeOption - 1, userInput });
     } else if (e.keyCode === 40) {
       if (activeOption === maxSuggest - 1) {
         return;
       }
       const userInput = listDom[activeOption +1].innerText
       console.log(userInput)
-      this.setState({ activeOption: activeOption + 1 , userInput});
+      await this.setState({ activeOption: activeOption + 1 , userInput});
     }
   };
 
@@ -81,22 +77,22 @@ export class Autocomplete extends Component {
       onChange,
       onClick,
       onKeyDown,
-
+      props: {keyword},
       state: { activeOption, filteredOptions, showOptions, userInput, maxSuggest }
     } = this;
     let optionList;
     if (showOptions && userInput) {
-      if (filteredOptions.length) {
+      if (this.props.suggestions) {
         optionList = (
           <ul className="options">
-            {filteredOptions.slice(0, maxSuggest).map((optionName, index) => {
+            {this.props.suggestions.slice(0, 5).map((optionName, index) => {
               let className;
               if (index === activeOption) {
                 className = 'option-active';
               }
               return (
                 <li className={className} key={index} onClick={onClick}>
-                  {optionName} {index}
+                  {optionName.title} 
                 </li>
               );
             })}
@@ -118,7 +114,7 @@ export class Autocomplete extends Component {
             className={"border-none form-control border-radius-none " + styles.focusNone + ' ' + styles.boxShadownNone} id="autoComplete" type="text" placeholder="Search ..." tabIndex={1} 
             onChange={onChange}
             onKeyDown={onKeyDown}
-            value={userInput}
+            value={keyword}
             ref = { this.searchRef }
           />
         </div>
@@ -128,4 +124,14 @@ export class Autocomplete extends Component {
   }
 }
 
-export default Autocomplete;
+const mapStateToProps = (state) => ({
+  keyword: state.search.keyword,
+  suggestions: state.search.suggestions
+})
+
+const mapDispatchToProps = dispatch => {
+  return {
+  }
+}
+
+export default connect(mapStateToProps, mapDispatchToProps) (Autocomplete)

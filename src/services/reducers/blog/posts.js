@@ -2,6 +2,7 @@ import ActionsType from './../../actionsName'
 
 const initialState = {
     data: [],
+    suggestions: [],
     err: null,
     loading: false,
     keyword: '',
@@ -10,9 +11,6 @@ const initialState = {
 
 export default (state = initialState, { type, payload }) => {
     switch (type) {
-    // case ActionsType.CALLING_API:
-    //     return {...state, loading: true }
-    
     case ActionsType.CALL_API_SUCCESS:
         return {...state,...payload, loading: false, err: false, keyword: payload.keyword}
 
@@ -22,9 +20,12 @@ export default (state = initialState, { type, payload }) => {
     case ActionsType.T_GET_ALL_LIST_POST:
         return {...state, ...payload }
 
-    case ActionsType.GET_CONTENT_POST:
+    case ActionsType.GET_DETAIL_POST:
         return {...state, content: payload.content}
         
+    case ActionsType.GET_SUGGESTIONS:
+        console.log(payload)
+        return {...state, ...payload}
     default:
         return state
     }

@@ -8,7 +8,7 @@ class Pagination extends Component {
         super(props)
         this.state = {
             data: 0,
-            totalPage: 16,
+            totalPage: 1,
             currentPage: 1,
             maxPaginationDisplay: 9,
             pagination: null,
@@ -24,7 +24,6 @@ class Pagination extends Component {
     
     render() {
         const {currentPage, totalPage} = this.state;
-        console.log(currentPage)
         return (
             <div className="rp-search-result__pagination">
                 <div className="search-result__pagination-container container">
@@ -44,7 +43,6 @@ class Pagination extends Component {
         e.preventDefault()
         this.setState({currentPage: pageNumber})
         this.props.callbackPagination(pageNumber)
-        console.log('call', pageNumber)
     }
 
     nextPage = (e) => {
@@ -63,11 +61,11 @@ class Pagination extends Component {
     }
 
     genPagination = (current) => {
-        const range = 9; const pages = 16; const  start = 1
+        const range = this.state.maxPaginationDisplay; const pages = this.state.totalPage; const  start = 1
         const paging = []; 
-        console.log(current, 'hien tai')
         var i = Math.min(pages + start - range, Math.max(start, current - (range / 2 | 0)));
         const end = i + range;
+        if(i<1) i = 1;
         for(let j = i; j < end; j ++) {
             paging.push(<a key={j} onClick={ (e) => this.callback(e, j) } className={"sr-pagination--item " + (j === current ? ' is-actived' : ' ') } href="/#">{j}</a>) 
         }
@@ -75,10 +73,6 @@ class Pagination extends Component {
     }
 }
 
-const mapStateToProps = (state) => ({
-    total_search: state.navigationPost.total_search,
-})
 
-
-export default Pagination
+export default Pagination;
 

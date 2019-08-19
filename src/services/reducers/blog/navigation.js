@@ -18,7 +18,8 @@ export default (state = initialState, { type, payload }) => {
         return { ...state, total_search: payload.total_search, loading: false, keyword: payload.keyword }
 
     case ActionsType.GET_DATA_SEARCH_BY_KEYWORD_PAGE:
-        return {...state, dataCurrentPage: [...payload.data]}
+        console.log(payload)
+        return {...state, ...payload}
     default:
         return state
     }
