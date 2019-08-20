@@ -16,7 +16,6 @@ class Home extends Component {
             flag: true,
             currentSuggest: 0
         }
-        this.searchRef = React.createRef()
     }
     
     UNSAFE_componentWillReceiveProps(nextProps) {

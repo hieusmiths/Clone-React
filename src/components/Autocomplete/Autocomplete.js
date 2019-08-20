@@ -1,8 +1,8 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 
-import styles from './style.module.scss'
-import './style.module.scss'
+// import styles from './style.module.scss'
+import './style.scss'
 export class Autocomplete extends Component {
   static propTypes = {
     options: PropTypes.instanceOf(Array).isRequired
@@ -56,8 +56,9 @@ export class Autocomplete extends Component {
       this.setState({
         activeOption: 0,
         showOptions: false,
+        userInput: this.searchRef.current.value
       });
-      console.log(this.searchRef.current.value)
+      // this.props.search(this.searchRef.current.value)
       this.props.callBackEnter(this.searchRef.current.value)
     } else if (e.keyCode === 38) {
       if (activeOption === 0) {
@@ -115,7 +116,7 @@ export class Autocomplete extends Component {
         <div className="search">
           <input
             type="text"
-            className={"border-none form-control border-radius-none " + styles.focusNone + ' ' + styles.boxShadownNone} id="autoComplete" type="text" placeholder="Search ..." tabIndex={1} 
+            className={"border-none form-control border-radius-none " } id="autoComplete" type="text" placeholder="Search ..." tabIndex={1} 
             onChange={onChange}
             onKeyDown={onKeyDown}
             value={userInput}

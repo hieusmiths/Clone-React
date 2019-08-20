@@ -87,10 +87,10 @@ class SearchResultContainer extends Component {
         const searchParams = new URLSearchParams();
         searchParams.set("keyword", this.props.keyword);
         searchParams.set("page", pageNumber);
-        this.props.history.push({
-            pathname: '/search',
-            search: searchParams.toString()
-      });
+    //     this.props.history.push({
+    //         pathname: '/search',
+    //         search: searchParams.toString()
+    //   });
     }
 
     
