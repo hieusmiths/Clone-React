@@ -1,14 +1,11 @@
 import React, { Component } from 'react'
-import { connect } from 'react-redux'
-
-import { fetchDataPageNumber } from './../../services/actions/post'
 
 class Pagination extends Component {
     constructor(props) {
         super(props)
         this.state = {
             data: 0,
-            totalPage: 16,
+            totalPage: 1,
             currentPage: 1,
             maxPaginationDisplay: 9,
             pagination: null,
@@ -17,14 +14,14 @@ class Pagination extends Component {
     componentWillReceiveProps(nextProps) {
         this.setState({
             data: nextProps.totalResult,
-            totalPage: Math.ceil(nextProps.totalResult / nextProps.max)
+            totalPage: Math.ceil(nextProps.totalResult / nextProps.max),
+            currentPage: nextProps.currentPage,
         })
     }
     
     
     render() {
         const {currentPage, totalPage} = this.state;
-        console.log(currentPage)
         return (
             <div className="rp-search-result__pagination">
                 <div className="search-result__pagination-container container">
@@ -40,45 +37,42 @@ class Pagination extends Component {
         )
     }
     
-    callback = (e, pageNumber) => {
+    onClick = (e, pageNumber) => {
         e.preventDefault()
         this.setState({currentPage: pageNumber})
-        this.props.callbackPagination(pageNumber)
-        console.log('call', pageNumber)
+        this.props.changePage(pageNumber)
     }
 
     nextPage = (e) => {
         e.preventDefault()
         if(this.state.currentPage === this.state.maxPaginationDisplay) return
         const pageNumber = this.state.currentPage + 1;
-        this.callback(e, pageNumber)
+        this.onClick(e, pageNumber)
         this.setState({currentPage: pageNumber})
     }
     prevPage = (e) => {
         e.preventDefault()
         if(this.state.currentPage === 1) return
         const pageNumber = this.state.currentPage - 1;
-        this.callback(e, pageNumber)
+        this.onClick(e, pageNumber)
         this.setState({currentPage: this.state.currentPage - 1})
     }
 
     genPagination = (current) => {
-        const range = 9; const pages = 16; const  start = 1
+        current = Number(current)
+        const range = this.state.maxPaginationDisplay; const pages = this.state.totalPage; const  start = 1
         const paging = []; 
-        console.log(current, 'hien tai')
         var i = Math.min(pages + start - range, Math.max(start, current - (range / 2 | 0)));
         const end = i + range;
+        if(i<1) i = 1;
         for(let j = i; j < end; j ++) {
-            paging.push(<a key={j} onClick={ (e) => this.callback(e, j) } className={"sr-pagination--item " + (j === current ? ' is-actived' : ' ') } href="/#">{j}</a>) 
+            paging.push(<a key={j} onClick={ (e) => this.onClick(e, j) } className={"sr-pagination--item " + (j === current ? ' is-actived' : ' ') } href="/#">{j}</a>) 
         }
+        paging.push(<a key={10} onClick={ (e) => this.onClick(e, 10) } className={"sr-pagination--item " + (10 === current ? ' is-actived' : ' ') } href="/#">10</a>) 
         return paging;
     }
 }
 
-const mapStateToProps = (state) => ({
-    total_search: state.navigationPost.total_search,
-})
 
-
-export default Pagination
+export default Pagination;
 

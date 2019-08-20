@@ -1,9 +1,18 @@
 import React, { Component } from 'react'
 import { connect } from 'react-redux'
-import Pagination from '../Pagination/Pagination';
-import NewsDetailModal from '../../page/modals/news-detail-modal/NewsDetailModal';
-// count_by_keyword, type: ['', 'post', 'res_address']
+import { withRouter} from 'react-router-dom';
+
+import Pagination from '../UI/Pagination/Pagination';
+import NewsDetailModal from '../../page/modals/NewsDetailModal';
+import Autocomplete from '../UI/Autocomplete/Autocomplete';
+import { getSuggestion }  from './../../actions/search'
+import NavSearchResult from './../../layout/headers/NavSearchResult'
 class SeachResult extends Component {
+  constructor(){
+    super()
+    this.scrollOffset = React.createRef()
+  }  
+
     render() {
         return (
             <section className="section__result-pages">
@@ -18,7 +27,9 @@ class SeachResult extends Component {
                       <div className="rp-header-top__search-input lh-top__search-input">
                         <div className="search-input">
                           <div className="w-100 input-search__content collapsed" id="autoComplete__content">
-                            <input className="form-control" id="autoComplete" type="text" placeholder="Search ..." tabIndex={1} />
+                           
+                           <Autocomplete field={'search'}  maxSuggest={5} callBackEnter={this.callBackEnter} id='listSuggest'  search = { this.search } default={this.props.keyword} />
+
                           </div>
                         </div>
                       </div>
@@ -46,31 +57,16 @@ class SeachResult extends Component {
                       </div>
                     </div>
                   </div>
-                  <div className="result-pages__header-navigation">
-                    <div className="rp-header-navigation header-navigation__container">
-                      <div className="header-navigation__items d-flex">
-                        <div className="header-navigation--item is-actived"><a className="hn-item--text" href="/ket-qua">Tất cả</a></div>
-                        <div className="header-navigation--item"><a className="hn-item--text" href="/ket-qua/thong-tin">Thông tin</a></div>
-                        <div className="header-navigation--item"><a className="hn-item--text" href="/ban-do">Bản đồ</a></div>
-                        <div className="header-navigation--item"><a className="hn-item--text" href="/ket-qua/bang-gia">Bảng giá</a></div>
-                        <div className="header-navigation--item dropdown">
-                          <div className="hn-item--text dropdown-toggle" data-toggle="dropdown">Thêm <span className="fa icon" /></div>
-                          <div className="dropdown-menu hn-menu__add">
-                            <div className="dropdown-item"><a href="/#">Danh bạ</a></div>
-                            <div className="dropdown-item"><a href="/#">Tài nguyên</a></div>
-                            <div className="dropdown-item"><a href="/#">Hỏi đáp</a></div>
-                          </div>
-                        </div>
-                      </div>
-                    </div>
-                  </div>
+                  
+                  <NavSearchResult />
+
                 </div>
               </div>
               <div className="result-pages__body">
                 <div className="result-pages__body-container container">
                   <div className="result-pages__search-result">
-                    <div className="rp-search-result__header">
-                      <div className="text-result">Khoảng <strong> { this.props.totalReult }</strong> kết quả</div>
+                    <div ref={ (ref) => this.scrollOffset=ref } className="rp-search-result__header">
+                      <div className="text-result">Khoảng <strong> { this.props.totalResult }</strong> kết quả</div>
                       <div className="search-result__header-map">
                         <div className="header-map__container">
                           <div className="header-map__main">
@@ -96,7 +92,7 @@ class SeachResult extends Component {
                     </div>
                     
                     {/* Pagination */}
-                          <Pagination max = { 4 } totalResult = { this.props.totalResult } callbackPagination= {this.props.callbackPagination} />
+                          <Pagination  currentPage={this.props.page}  max = { 4 } totalResult = { this.props.totalResult } changePage= { this.changePage} />
                     {/* Pagination */}
                   </div>
                 </div>
@@ -284,14 +280,37 @@ class SeachResult extends Component {
           </section>
         )
     }
+    changePage = (pageNumber) => {
+      this.props.changePage(pageNumber)
+      this.scrollToRef(this.scrollOffset)
+    }
+    
+    scrollToRef = ref => window.scrollTo({
+      top: this.scrollOffset.offsetTop, 
+      behavior: "smooth" 
+    });
+
+    search = (searchText) => {
+      this.setState({searchText}, () => {
+          const payload = {
+              query: {
+                  keyword: searchText
+              }
+          }
+          this.props.test(payload)
+          }
+      )
+  }
+
 }
 const mapStateToProps = (state) => ({
-  data: state.posts.payload
+  data: state.search.dataCurrentPage,
+  keyword: state.search.keyword,
+  page: state.search.page,
 })
 
 const mapDispatchToProps = dispatch =>{
   return {
-    
   }
 }
-export default connect(mapStateToProps, mapDispatchToProps)(SeachResult)
+export default connect(mapStateToProps, mapDispatchToProps)(withRouter(SeachResult))

@@ -2,6 +2,7 @@ import React, { Component } from 'react'
 
 export default class HomePersonal extends Component {
     render() {
+        const {data} = this.props;
         return (
             <div className="rp-search-result-item">
                 <div className="search-result__item-container d-flex"><img className="sr-item__modal" src="../../../assets/img/icon-modal.png" />
@@ -13,6 +14,7 @@ export default class HomePersonal extends Component {
                         <div className="item-details__title">
                         <div className="ids-title__content">
                             <div className="ids-title--header d-flex"><a className="title--name" href="#">Asset data team</a>
+                            {data.name}
                             <div className="title--rate d-flex align-items-center"><span>[Chung cư </span><span className="title_rate--highlight"> 3,5+ </span><img src="../../assets/img/star.png" alt="" />]</div>
                             </div>
                             <p className="mb-0 ids-title--category">đã đăng một bài viết trong <a className="ids-title--category" href="/ket-qua/thong-tin">Nhà riêng</a> cùng với <a href="/#" className="ids-title--category">Homekeys 97891</a> cập nhật trạng thái <span className="red bold">Bán</span></p>

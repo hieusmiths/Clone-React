@@ -1,6 +1,6 @@
 import React, { Component } from 'react'
 
-export default class HeaderTop extends Component {
+export default class Header extends Component {
     render() {
         return (
             <div className="homepage__header layout-header d-none d-lg-block">

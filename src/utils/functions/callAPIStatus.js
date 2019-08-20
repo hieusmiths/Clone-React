@@ -12,3 +12,6 @@ export {
     callAPISuccess,
     callAPIErr
 }
+// const searchParams = new URLSearchParams();
+//         searchParams.set("keyword", this.props.keyword);
+//         searchParams.set("page", pageNumber);

@@ -1,28 +1,11 @@
 import React, { Component } from 'react'
 import { connect } from 'react-redux';
-import { Redirect, withRouter } from 'react-router-dom'
-import { fetchSearchByKeyWord_API }  from './../../services/actions/post'
-import Autocomplete from '../Autocomplete/Autocomplete';
+import { withRouter } from 'react-router-dom'
+import { getSuggestion }  from './../../actions/search'
+import Autocomplete from '../UI/Autocomplete/Autocomplete';
 import './style.module.scss'
 
 class Home extends Component {
-    constructor(props){
-        super(props)
-        this.state = {
-            data: [],
-            isSubmited: false,
-            isActiveSuggestion: false,
-            searchText: '',
-            flag: true,
-            currentSuggest: 0
-        }
-    }
-    
-    UNSAFE_componentWillReceiveProps(nextProps) {
-        this.setState({
-            data: nextProps.suggestions
-        })
-    }
     render() {
         return (
             <div className="section-homepage">
@@ -84,7 +67,12 @@ class Home extends Component {
                             <div className="homepage--input-search">
                                 <div className="input-search__container d-flex justify-content-center">
                                     <div className="w-100 input-search__content collapsed" id="autoComplete__content">
-                                        <Autocomplete  maxSuggest={5} callBackEnter={this.callBackEnter} id='listSuggest' callback = { this.redirectCallback} search = { this.search } suggestions= { ["1", "hieu", "Minh","hieu", "Minh","hieu", "Minh","hieu", "Minh","hieu", "Minh","hieu", "Minh","hieu", "Minh","hieu", "Minh"]} />
+                                        <Autocomplete 
+                                        pathRedirect='/result' 
+                                        field={'search'}  maxSuggest={5} 
+                                        id='listSuggest' 
+                                        search = { this.search }  
+                                        />
                                     </div>
                                 </div>
                             </div>
@@ -135,41 +123,15 @@ class Home extends Component {
         )
     }
 
-    search = (searchText) => {
-        console.log(searchText)
-        this.setState({searchText}, () => {
-            const payload = {
-                query: {
-                    keyword: searchText
-                }
-            }
-            this.props.test(payload)
-            }
-        )
-    }
-
-
-    callBackEnter = (searchText) => {
-        console.log("paren", `?keyword=${searchText}&page=1`)
-        this.props.history.push({
-            pathname:"/search",
-            search: `?keyword=${searchText}&page=1`
-        });
-    }
-
 }
 
-
-const mapStateToProps = (state) => ({
-    suggestions: state.posts.data
-})
 
 const mapDispatchToProps = dispatch => {
     return {
-        test: (payload) => {
-            dispatch(fetchSearchByKeyWord_API(payload))
-        }
+        getSuggestion: (payload) => {
+            dispatch(getSuggestion(payload))
+        },
     }
 }
 
-export default withRouter(connect(mapStateToProps, mapDispatchToProps)(Home))
+export default connect(null, mapDispatchToProps)(withRouter(Home))

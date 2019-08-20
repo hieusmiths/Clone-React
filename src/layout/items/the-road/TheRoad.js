@@ -1,7 +1,8 @@
 import React, { Component } from 'react'
-
+import { diffDays } from './../../../utils/functions/diffDays'
 export default class TheRoad extends Component {
     render() {
+        const {data} = this.props
         return (
             <div className="rp-search-result-item">
                 <div className="search-result__item-container d-flex"><img className="sr-item__modal" src="../../../assets/img/icon-modal.png" />
@@ -12,18 +13,18 @@ export default class TheRoad extends Component {
                     <div className="item-details__container">
                         <div className="item-details__title">
                         <div className="ids-title__content">
-                            <div className="ids-title--header d-flex"><a className="title--name" href="#">Asset data team</a>
+                            <div className="ids-title--header d-flex"><a className="title--name" href="#">{data.user.name}</a>
                             <div className="title--rate d-flex align-items-center"><span>[Chung cư </span><span className="title_rate--highlight"> 3,5+ </span><img src="../../assets/img/star.png" alt="" />]</div>
                             </div>
                             <p className="mb-0 ids-title--category">đã đăng một <a className="ids-title--category" href="/ket-qua/thong-tin">Con đường</a> </p>
-                            <p className="mb-0 ids-title--date-posted">10 ngày trước</p>
+                            <p className="mb-0 ids-title--date-posted">{ diffDays(data.write_date) } ngày trước</p>
                         </div>
                         </div>
                         <div className="item-details__post box-info-line">
                         <div className="row">
                             <div className="col-sm-4 col-xs-12">
                             <div className="name">Lý Chính Thắng</div>
-                            <div className="location">Phường 7, Quận Tân Bình, Hồ Chí Minh</div>
+                            <div className="location">Phường 7, Quận Tân Bình, {data.address_name}</div>
                             <p className="info-left">Bất động sản trên đường này</p>
                             <div className="info-row">
                                 <span>

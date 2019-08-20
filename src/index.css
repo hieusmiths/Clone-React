@@ -17,3 +17,9 @@ code {
 .border-none {
   border: none !important;
 }
+<<<<<<< HEAD
+=======
+.modal news-details__modal .show {
+  transition: .4s;
+}
+>>>>>>> b3bdca10fbf0b32da6aaaacbe2dfe3875e084e5e
