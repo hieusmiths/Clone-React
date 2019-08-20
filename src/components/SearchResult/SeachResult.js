@@ -2,17 +2,18 @@ import React, { Component } from 'react'
 import { connect } from 'react-redux'
 import { withRouter} from 'react-router-dom';
 
-import Pagination from '../Pagination/Pagination';
-import NewsDetailModal from '../../page/modals/news-detail-modal/NewsDetailModal';
-import Autocomplete from '../Autocomplete/Autocomplete';
+import Pagination from '../UI/Pagination/Pagination';
+import NewsDetailModal from '../../page/modals/NewsDetailModal';
+import Autocomplete from '../UI/Autocomplete/Autocomplete';
 import { getSuggestion, setSearch }  from './../../services/actions/post'
+import NavSearchResult from './../../layout/headers/NavSearchResult'
 class SeachResult extends Component {
   constructor(){
     super()
     this.scrollOffset = React.createRef()
-  }
+  }  
+
     render() {
-        console.log(this.props.keyword)
         return (
             <section className="section__result-pages">
             <div className="container-fluid result-pages__container">
@@ -27,7 +28,7 @@ class SeachResult extends Component {
                         <div className="search-input">
                           <div className="w-100 input-search__content collapsed" id="autoComplete__content">
                            
-                           <Autocomplete field={'search'}  maxSuggest={5} callBackEnter={this.callBackEnter} id='listSuggest' callback = { this.redirectCallback} search = { this.search } default={this.props.keyword} />
+                           <Autocomplete field={'search'}  maxSuggest={5} callBackEnter={this.callBackEnter} id='listSuggest'  search = { this.search } default={this.props.keyword} />
 
                           </div>
                         </div>
@@ -56,24 +57,9 @@ class SeachResult extends Component {
                       </div>
                     </div>
                   </div>
-                  <div className="result-pages__header-navigation">
-                    <div className="rp-header-navigation header-navigation__container">
-                      <div className="header-navigation__items d-flex">
-                        <div className="header-navigation--item is-actived"><a className="hn-item--text" href="/ket-qua">Tất cả</a></div>
-                        <div className="header-navigation--item"><a className="hn-item--text" href="/ket-qua/thong-tin">Thông tin</a></div>
-                        <div className="header-navigation--item"><a className="hn-item--text" href="/ban-do">Bản đồ</a></div>
-                        <div className="header-navigation--item"><a className="hn-item--text" href="/ket-qua/bang-gia">Bảng giá</a></div>
-                        <div className="header-navigation--item dropdown">
-                          <div className="hn-item--text dropdown-toggle" data-toggle="dropdown">Thêm <span className="fa icon" /></div>
-                          <div className="dropdown-menu hn-menu__add">
-                            <div className="dropdown-item"><a href="/#">Danh bạ</a></div>
-                            <div className="dropdown-item"><a href="/#">Tài nguyên</a></div>
-                            <div className="dropdown-item"><a href="/#">Hỏi đáp</a></div>
-                          </div>
-                        </div>
-                      </div>
-                    </div>
-                  </div>
+                  
+                  <NavSearchResult />
+
                 </div>
               </div>
               <div className="result-pages__body">
@@ -106,7 +92,7 @@ class SeachResult extends Component {
                     </div>
                     
                     {/* Pagination */}
-                          <Pagination   max = { 4 } totalResult = { this.props.totalResult } callbackPagination= { this.callbackPagination} />
+                          <Pagination  currentPage={this.props.page}  max = { 4 } totalResult = { this.props.totalResult } changePage= { this.changePage} />
                     {/* Pagination */}
                   </div>
                 </div>
@@ -294,8 +280,8 @@ class SeachResult extends Component {
           </section>
         )
     }
-    callbackPagination = (pageNumber) => {
-      this.props.callbackPagination(pageNumber)
+    changePage = (pageNumber) => {
+      this.props.changePage(pageNumber)
       this.scrollToRef(this.scrollOffset)
     }
     
@@ -318,22 +304,19 @@ class SeachResult extends Component {
 
   callBackEnter = (searchText) => {
       this.props.setSearch({keyword: searchText})
-      this.props.history.push(`/search?keyword=${searchText}&page=1`);
   }
 }
 const mapStateToProps = (state) => ({
-  data: state.posts.payload,
-  keyword: state.search.keyword
+  data: state.search.dataCurrentPage,
+  keyword: state.search.keyword,
+  page: state.search.page,
 })
 
 const mapDispatchToProps = dispatch =>{
   return {
-      test: (payload) => {
-              dispatch(getSuggestion(payload))
-          },
-          setSearch: (payload) => {
-              dispatch(setSearch(payload))
-          }
+      setSearch: (payload) => {
+          dispatch(setSearch(payload))
+      }
   }
 }
 export default connect(mapStateToProps, mapDispatchToProps)(withRouter(SeachResult))

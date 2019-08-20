@@ -1,7 +1,4 @@
 import React, { Component } from 'react'
-import { connect } from 'react-redux'
-
-import { fetchDataPageNumber } from './../../services/actions/post'
 
 class Pagination extends Component {
     constructor(props) {
@@ -17,7 +14,8 @@ class Pagination extends Component {
     componentWillReceiveProps(nextProps) {
         this.setState({
             data: nextProps.totalResult,
-            totalPage: Math.ceil(nextProps.totalResult / nextProps.max)
+            totalPage: Math.ceil(nextProps.totalResult / nextProps.max),
+            currentPage: nextProps.currentPage,
         })
     }
     
@@ -39,35 +37,36 @@ class Pagination extends Component {
         )
     }
     
-    callback = (e, pageNumber) => {
+    onClick = (e, pageNumber) => {
         e.preventDefault()
         this.setState({currentPage: pageNumber})
-        this.props.callbackPagination(pageNumber)
+        this.props.changePage(pageNumber)
     }
 
     nextPage = (e) => {
         e.preventDefault()
         if(this.state.currentPage === this.state.maxPaginationDisplay) return
         const pageNumber = this.state.currentPage + 1;
-        this.callback(e, pageNumber)
+        this.onClick(e, pageNumber)
         this.setState({currentPage: pageNumber})
     }
     prevPage = (e) => {
         e.preventDefault()
         if(this.state.currentPage === 1) return
         const pageNumber = this.state.currentPage - 1;
-        this.callback(e, pageNumber)
+        this.onClick(e, pageNumber)
         this.setState({currentPage: this.state.currentPage - 1})
     }
 
     genPagination = (current) => {
+        current = Number(current)
         const range = this.state.maxPaginationDisplay; const pages = this.state.totalPage; const  start = 1
         const paging = []; 
         var i = Math.min(pages + start - range, Math.max(start, current - (range / 2 | 0)));
         const end = i + range;
         if(i<1) i = 1;
         for(let j = i; j < end; j ++) {
-            paging.push(<a key={j} onClick={ (e) => this.callback(e, j) } className={"sr-pagination--item " + (j === current ? ' is-actived' : ' ') } href="/#">{j}</a>) 
+            paging.push(<a key={j} onClick={ (e) => this.onClick(e, j) } className={"sr-pagination--item " + (j === current ? ' is-actived' : ' ') } href="/#">{j}</a>) 
         }
         return paging;
     }

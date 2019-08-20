@@ -17,6 +17,6 @@ code {
 .border-none {
   border: none !important;
 }
-.option-active {
-  color: red
+.modal news-details__modal .show {
+  transition: .4s;
 }

@@ -1,6 +1,5 @@
 export default class ActionsType {
 
-    static CALLING_API = 'CALLING_API'
     static CALL_API_SUCCESS = 'CALL_API_SUCCESS'
     static CALL_API_ERROR = 'CALL_API_ERROR'
     static T_GET_ALL_LIST_POST = 'GET_ALL_LIST_POST'
@@ -10,4 +9,5 @@ export default class ActionsType {
     static GET_DETAIL_POST = 'GET_DETAIL_POST'
     static GET_SUGGESTIONS = 'GET_SUGGESTIONS'
     static SEARCH_SAVE = 'SEARCH_SAVE'
+    static UPDATE_KEY_SEARCH = 'UPDATE_KEY_SEARCH'
 }

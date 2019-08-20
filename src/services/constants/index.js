@@ -4,7 +4,8 @@ export default class Constants {
     static API_GET_LIST_SEARCH_BY_KEYWORD = 'http://192.168.1.247:8384/api/v1/search/all'
     static API_GET_COUNT_SEARCH_BY_KEY_WORD = 'http://192.168.1.247:8384/api/v1/search/count_by_keyword' // keyword= tring, type= string // default All
     static API_GET_DETAIL_POST = 'http://192.168.1.247:8384/api/v1/post/get_by_id'
-    static TYPE_New = {
+    static API_GET_LIST_POST = 'http://192.168.1.247:8384/api/v1/search/get_post_by_keyword'
+    static TYPE_NEW = {
         POST: 'post',
         RES_ADDRESS: 'res_address',
         REVIEW: 'REVIEW',

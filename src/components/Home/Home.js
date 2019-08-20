@@ -1,21 +1,15 @@
 import React, { Component } from 'react'
 import { connect } from 'react-redux';
 import { withRouter } from 'react-router-dom'
-import { getSuggestion, setSearch }  from './../../services/actions/post'
-import Autocomplete from '../Autocomplete/Autocomplete';
+import { getSuggestion }  from './../../services/actions/post'
+import Autocomplete from '../UI/Autocomplete/Autocomplete';
 import './style.module.scss'
 
 class Home extends Component {
     constructor(props){
         super(props)
         this.state = {
-            data: [],
-            isSubmited: false,
-            isActiveSuggestion: false,
             searchText: '',
-            flag: true,
-            currentSuggest: 0,
-            redirect: false
         }
         this.searchRef = React.createRef()
     }
@@ -87,7 +81,12 @@ class Home extends Component {
                             <div className="homepage--input-search">
                                 <div className="input-search__container d-flex justify-content-center">
                                     <div className="w-100 input-search__content collapsed" id="autoComplete__content">
-                                        <Autocomplete field={'search'}  maxSuggest={5} callBackEnter={this.callBackEnter} id='listSuggest' callback = { this.redirectCallback} search = { this.search }  />
+                                        <Autocomplete 
+                                        pathRedirect='/result' 
+                                        field={'search'}  maxSuggest={5} 
+                                        id='listSuggest' 
+                                        search = { this.search }  
+                                        />
                                     </div>
                                 </div>
                             </div>
@@ -140,38 +139,21 @@ class Home extends Component {
 
     search = (searchText) => {
         this.setState({searchText}, () => {
-            const payload = {
-                query: {
-                    keyword: searchText
-                }
-            }
-            this.props.test(payload)
+            this.props.getSuggestion(searchText)
             }
         )
     }
 
 
-    callBackEnter = (searchText) => {
-        this.props.history.push(`/search?keyword=${searchText}&page=1`);
-        this.props.setSearch({keyword: searchText})
-    }
-
 }
 
-
-const mapStateToProps = (state) => ({
-    
-})
 
 const mapDispatchToProps = dispatch => {
     return {
-        test: (payload) => {
+        getSuggestion: (payload) => {
             dispatch(getSuggestion(payload))
         },
-        setSearch: (payload) => {
-            dispatch(setSearch(payload))
-        }
     }
 }
 
-export default connect(mapStateToProps, mapDispatchToProps)(withRouter(Home))
+export default connect(null, mapDispatchToProps)(withRouter(Home))

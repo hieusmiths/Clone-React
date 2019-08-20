@@ -1,5 +1,6 @@
 import ActionsType from '../../actionsType'
 import Constants  from './../../constants'
+import { callingAPI, callAPISuccess, callAPIErr } from  './../../../utils/functions/callAPIStatus'
 
 import axios from 'axios'
 
@@ -35,6 +36,7 @@ export const fetchCountPostByKeyword_API = (payload) => {
             }
             dispatch(fecthCountPost_API(payload))
         } catch (error) {
+            dispatch(callAPIErr(ActionsType.CALL_API_ERROR, error))
         }
     }
 }
@@ -46,11 +48,13 @@ const fecthDataByPage = (payload) => {
     }
 }
 export const fetchDataPageNumber = (payload) => {
+
     const params = {
-        page: payload.page,
-        keyword: payload.keyword
+        ...payload
     }
-    
+
+    console.log(payload)
+
     return async dispatch => {
         try {
             const response = await axios.get(Constants.API_GET_LIST_SEARCH_BY_KEYWORD, { params })
@@ -95,31 +99,21 @@ const getSuggestionSuccess = (payload) => {
     }
 }
 
-
-
-export const getSuggestion = (keyword) => {
-    
-    
+export const getSuggestion = (payload) => {
+    const params = {
+        ...payload.query
+    }
+    console.log(params)
     return async dispatch => {
-        dispatch(updateKeySearch(keyword))
         try {
-            const response = await axios.get(Constants.API_GET_SUGGESTION, { params: {
-                keyword
-            } })
+            const response = await axios.get(Constants.API_GET_SUGGESTION, { params })
             const payload = {
-                keyword,
+                keyword: params.keyword,
                 suggestions: response.data
             }
             dispatch(getSuggestionSuccess(payload))
         } catch (error) {
             
         }
-    }
-}
-
-export const updateKeySearch = (keySearch) => {
-    return {
-        type : ActionsType.UPDATE_KEY_SEARCH,
-        keyword: keySearch
     }
 }

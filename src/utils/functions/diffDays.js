@@ -1,5 +1,4 @@
 
-
 export const diffDays = (from, to = new Date()) => {
     const fromDay = new Date(from)
     const toDay = new Date(to)

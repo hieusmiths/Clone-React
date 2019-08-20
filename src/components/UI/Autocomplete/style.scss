@@ -23,14 +23,15 @@ ul.options {
     transition: width 0.3s;
     margin: auto;
     position: relative;
+    padding: 0px !important;
   }
   
   ul.options li {
     display: block;
     background: white;
-    margin: 10px auto;
-    padding: 10px;
-    font-size: 1.2rem;
+    margin: 2px auto;
+    padding: 2px;
+    font-size: .7rem;
     width: 100%;
     border-radius: 2px;
   }
@@ -43,7 +44,7 @@ ul.options {
   
   ul.options li.option-active {
     background: whitesmoke;
-    font-size: 1.5rem;
+    font-size: 1rem;
     color: #00b4cc;
   }
   .no-options {
